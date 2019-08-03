@@ -1,3 +1,11 @@
+/*
+ * Name:Balram Panwar
+ * Email id: balram.panwar@gmail.com
+ * Name of the file: VirtualFunction.cpp
+ * Win10
+ * Microsoft Visual Studio
+ */
+
 #include <iostream>
 using namespace std;
 

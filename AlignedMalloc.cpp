@@ -13,6 +13,7 @@
 void* aligned_malloc( size_t required_bytes ,size_t alignment ) {
   void* p1 ; //alligned initial block
   void* p2 ;// alligned block inside initial block
+ 
   // if alignment is 16, we need to allocate an extra 15 required_bytes
   // 15bytes + 100bytes right after that sequences, 
   //Now,memory address divisble by 16 with space for 100 bytes
@@ -20,6 +21,7 @@ void* aligned_malloc( size_t required_bytes ,size_t alignment ) {
   if ((p1 = (void*)malloc(required_bytes + offset)) == NULL) {
     return NULL;
   }
+ 
   // if alignment is 16, then one of the first 16 memory address
   // in the block at p must be divisible by 16. 
   // with (p+ 15) & 11...10000 we advance as need to this address

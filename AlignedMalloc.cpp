@@ -11,12 +11,12 @@
 #include <malloc.h>
 
 void* aligned_malloc( size_t required_bytes ,size_t alignment ) {
-  void* p1 ; //alligned initial block
-  void* p2 ;// alligned block inside initial block
+  void* p1 ; //aligned initial block
+  void* p2 ;// aligned block inside initial block
  
   // if alignment is 16, we need to allocate an extra 15 required_bytes
   // 15bytes + 100bytes right after that sequences, 
-  //Now,memory address divisble by 16 with space for 100 bytes
+  //Now,memory address divisible by 16 with space for 100 bytes
   int offset = alignment -1 + sizeof(void*);
   if ((p1 = (void*)malloc(required_bytes + offset)) == NULL) {
     return NULL;

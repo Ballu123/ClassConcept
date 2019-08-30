@@ -104,8 +104,7 @@ public:
     }
 
     // Retrieves the length of the data resource.
-    size_t Length() const
-    {
+    size_t Length() const {
         return mLength;
     }
 };

@@ -36,7 +36,8 @@ struct GetImpl<0, First, Rest...> {
 };
 
 template<int index, typename First, typename... Rest>
-auto get(const Tuple<First, Rest...>& t) -> decltype(GetImpl<index, First, Rest...>::value(&t)) { //typename Type<index, First, Rest...>::value {
+auto get(const Tuple<First, Rest...>& t) -> decltype(GetImpl<index, First, Rest...>::value(&t)) {
+//typename Type<index, First, Rest...>::value {
   return GetImpl<index, First, Rest...>::value(&t);
 }
 //https://stackoverflow.com/questions/4041447/how-is-stdtuple-implemented

@@ -45,9 +45,7 @@ public:
   {
   }
   //Constructor
-  smart_ptr(T* object)
-    : m_Object{ object }
-    , m_ReferenceCount{ new ReferenceCount() }
+  smart_ptr(T* object) : m_Object{ object }, m_ReferenceCount{ new ReferenceCount() }
   {
     m_ReferenceCount->Increment();
     cout << "Created smart_ptr! Ref count is " << m_ReferenceCount->GetCount() << endl;
@@ -69,9 +67,7 @@ public:
     }
   }
   // Copy Constructor
-  smart_ptr(const smart_ptr<T>& other)
-    : m_Object{ other.m_Object }
-    , m_ReferenceCount{ other.m_ReferenceCount }
+  smart_ptr(const smart_ptr<T>& other) : m_Object{ other.m_Object }, m_ReferenceCount{ other.m_ReferenceCount }
   {
     m_ReferenceCount->Increment();
     cout << "Copied smart_ptr! Ref count is "

@@ -120,3 +120,23 @@ int main()
    v.insert(v.begin() + 1, A(50));
    return 0;
 }
+/*
+A(size_t). length = 25.
+A(A&&). length = 25. Moving resource.
+~A(). length = 0.
+A(size_t). length = 75.
+A(A&&). length = 75. Moving resource.
+A(const A&). length = 25. Copying resource.
+~A(). length = 25. Deleting resource.
+~A(). length = 0.
+A(size_t). length = 50.
+A(A&&). length = 50. Moving resource.
+A(const A&). length = 25. Copying resource.
+A(const A&). length = 75. Copying resource.
+~A(). length = 25. Deleting resource.
+~A(). length = 75. Deleting resource.
+~A(). length = 0.
+~A(). length = 25. Deleting resource.
+~A(). length = 50. Deleting resource.
+~A(). length = 75. Deleting resource.
+*/

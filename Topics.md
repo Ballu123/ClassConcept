@@ -16,5 +16,9 @@ but does not participate in reference counting. The existence or destruction of 
 or its other copies. It is required in some cases to break circular references between shared_ptr instances.
 https://www.geeksforgeeks.org/auto_ptr-unique_ptr-shared_ptr-weak_ptr-2/
 
+Multithreading in c++11
+
+https://thispointer.com/c11-multithreading-tutorial-series/
+
 
 

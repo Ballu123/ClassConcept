@@ -13,18 +13,15 @@
  * void printbuff ();
  */
  
-
 #include <algorithm>
 #include <iostream>
 #include<malloc.h>
 #include<memory.h>
 #include<stdio.h>
 
-
 using namespace std;
 
-class CircularBuffer
-{
+class CircularBuffer {
 public:
     CircularBuffer (size_t capacity);
     ~CircularBuffer ();
@@ -129,7 +126,6 @@ void CircularBuffer::printbuff () {
     size_t start = beg_index_;
     size_t end = end_index_ ;
     int i, count = 0;
-    //debugging
     cout << " Inside print size_ : " << size_ << " start : " << start << "  end: " << end << endl;
     for (i = start; count < size_; i = (i + 1) % capacity_) {
         printf (" Elem[%d] = %c\n", i, data_[i]);
@@ -156,13 +152,13 @@ int main () {
 	cb->printbuff ();
 
 	//write
-	int wirteval3 = cb->write ("gh", 2); // add "abc"
+	int wirteval3 = cb->write ("gh", 2); // add "gh"
 	cb->printbuff ();
 
 	//read 
 	char *data2 = (char *) malloc (sizeof (char) * 5);
 	memset (data2, 0, sizeof (data2));
-	int readval2 = cb->read (data2, 5); // read 3 char --> "abc"
+	int readval2 = cb->read (data2, 5); // read 5 char , but in buffer only 4 chars are present
 	cout << "readval2:= " << readval2 << endl;
 	cb->printbuff ();
 

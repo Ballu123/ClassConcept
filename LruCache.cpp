@@ -1,7 +1,7 @@
 /*
  * Name:Balram Panwar
  * Email id: balram.panwar@gmail.com
- * Name of the file: CircularBuffer.cpp
+ * Name of the file: LruCache.cpp
  * Win10
  * Microsoft Visual Studio
  * ref : http://bhrigu.me/blog/2017/01/22/lru-cache-c-plus-plus-implementation/

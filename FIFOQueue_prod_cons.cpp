@@ -2,8 +2,6 @@
  * Name: Balram Panwar
  * Email id: balram.panwar@gmail.com
  * Name of the file: FIFOQueue_prod_cons.cpp
- * Win10
- * Microsoft Visual Studio
  * Write a class in C++ to implement a First-in-first-out queue for passing data between producer and consumer threads. 
  * Requirement: You can only allocate one fixed-size memory space for the implementation. The class has the following member functions:
  * bool push(int value); // add data to FIFO, return false if the queue is full int pop(); // get data from FIFO
@@ -11,6 +9,7 @@
  * In this version, proper mutex locking and unlocking, along with condition variable notifications, 
  * This implementation ensures that the producer and consumer threads work together correctly synchronized. 
  * This implementation prevents data races and guarantees safe access to the shared resources of the FIFO queue.
+ * atul: https://github.com/atulraut/atclib/blob/master/thread/crack-d-ivi/producerconsumer.c
  */
 
 #include <iostream>

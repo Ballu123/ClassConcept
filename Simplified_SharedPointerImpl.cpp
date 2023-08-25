@@ -1,7 +1,7 @@
 /*
  * Name: Balram Panwar
  * Email id: balram.panwar@gmail.com
- * Name of the file: Simplified_SharedPointer_impl.cpp
+ * Name of the file: Simplified_SharedPointerImpl.cpp
  * A shared pointer is a smart pointer in C++ that helps manage memory for dynamically allocated objects. 
  * It uses reference counting to track how many shared pointers are pointing to the same dynamically allocated object.
  * When the last shared pointer pointing to the object is destroyed or reset, the object's memory is automatically deallocated.

@@ -6,6 +6,7 @@
  * It uses reference counting to track how many shared pointers are pointing to the same dynamically allocated object.
  * When the last shared pointer pointing to the object is destroyed or reset, the object's memory is automatically deallocated.
  * Ref : https://medium.com/analytics-vidhya/c-shared-ptr-and-how-to-write-your-own-d0d385c118ad
+ * Ref : https://www.vishalchovatiya.com/move-constructor-assignment-operator-with-shared-ptr/#l-value_reference_r-value_reference
  */
 
 typedef unsigned int uint;

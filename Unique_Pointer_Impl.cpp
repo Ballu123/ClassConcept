@@ -33,15 +33,20 @@ public:
         delete ptr_;
     }
 
-    // Copy constructor and assignment operator deleted
+    /*** Copy Semantics ***/
+    // Copy constructor deleted
     unique_ptr(const unique_ptr&) = delete;
-    unique_ptr& operator=(const unique_ptr&) = delete;
 
-    // Move constructor and assignment operator
+    // Move constructor
     unique_ptr(unique_ptr&& other) noexcept : ptr_(other.ptr_) {
         other.ptr_ = nullptr;
     }
 
+    /*** Move Semantics ***/
+    //Assignment operator deleted
+    unique_ptr& operator=(const unique_ptr&) = delete;
+
+    // Assignment operator
     unique_ptr& operator=(unique_ptr&& other) noexcept {
         if (this != &other) {
             delete ptr_;

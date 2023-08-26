@@ -51,7 +51,7 @@ public:
         return *this;
     }
 
-    // Member functions
+    // Member functions Get the pointer
     T* get() const noexcept {
         return ptr_;
     }
@@ -66,11 +66,13 @@ public:
         delete ptr_;
         ptr_ = ptr;
     }
-
+    
+    // Overload * operator
     T& operator*() const noexcept {
         return *ptr_;
     }
 
+    // Overload -> operator
     T* operator->() const noexcept {
         return ptr_;
     }

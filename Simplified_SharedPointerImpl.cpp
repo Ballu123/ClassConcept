@@ -18,16 +18,19 @@ private:
 	uint * refCount = nullptr;
 
 public:
-	my_shared_ptr() : ptr(nullptr), refCount(new uint(0)) // default constructor
+        // default constructor
+	my_shared_ptr() : ptr(nullptr), refCount(new uint(0))
 	{
 	}
-
-	my_shared_ptr(T * ptr) : ptr(ptr), refCount(new uint(1)) // constructor
+        // constructor
+	my_shared_ptr(T * ptr) : ptr(ptr), refCount(new uint(1)) 
 	{
 	}
 
 	/*** Copy Semantics ***/
-	my_shared_ptr(const my_shared_ptr & obj) // copy constructor
+        
+        // copy constructor
+	my_shared_ptr(const my_shared_ptr & obj) 
 	{
 		this->ptr = obj.ptr; // share the underlying pointer
 		this->refCount = obj.refCount;
@@ -36,8 +39,9 @@ public:
 			(*this->refCount)++; // if the pointer is not null, increment the refCount
 		}
 	}
-
-	my_shared_ptr& operator=(const my_shared_ptr & obj) // copy assignment
+        
+        // copy assignment
+	my_shared_ptr& operator=(const my_shared_ptr & obj) 
 	{
 		__cleanup__(); // cleanup any existing data
 		
@@ -51,15 +55,18 @@ public:
 	}
 
 	/*** Move Semantics ***/
-	my_shared_ptr(my_shared_ptr && dyingObj) // move constructor
+        
+        // move constructor
+	my_shared_ptr(my_shared_ptr && dyingObj) 
 	{
 		this->ptr = dyingObj.ptr; // share the underlying pointer
 		this->refCount = dyingObj.refCount;
 
 		dyingObj.ptr = dyingObj.refCount = nullptr; // clean the dying object
 	}
-
-	my_shared_ptr& operator=(my_shared_ptr && dyingObj) // move assignment
+        
+        // move assignment
+	my_shared_ptr& operator=(my_shared_ptr && dyingObj)
 	{
 		__cleanup__(); // cleanup any existing data
 		

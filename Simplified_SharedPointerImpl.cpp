@@ -5,88 +5,125 @@
  * A shared pointer is a smart pointer in C++ that helps manage memory for dynamically allocated objects. 
  * It uses reference counting to track how many shared pointers are pointing to the same dynamically allocated object.
  * When the last shared pointer pointing to the object is destroyed or reset, the object's memory is automatically deallocated.
+ * Ref : https://medium.com/analytics-vidhya/c-shared-ptr-and-how-to-write-your-own-d0d385c118ad
  */
 
-template <typename T>
-class SharedPointer {
+typedef unsigned int uint;
+
+template<class T>
+class my_shared_ptr
+{
 private:
-    T* ptr;
-    size_t* refCount;
+	T * ptr = nullptr;
+	uint * refCount = nullptr;
 
 public:
-    SharedPointer() : ptr(nullptr), refCount(nullptr) {}
+	my_shared_ptr() : ptr(nullptr), refCount(new uint(0)) // default constructor
+	{
+	}
 
-    SharedPointer(T* rawPtr) : ptr(rawPtr), refCount(new size_t(1)) {}
+	my_shared_ptr(T * ptr) : ptr(ptr), refCount(new uint(1)) // constructor
+	{
+	}
 
-    SharedPointer(const SharedPointer& other) : ptr(other.ptr), refCount(other.refCount) {
-        if (refCount) {
-            ++(*refCount);
-        }
-    }
+	/*** Copy Semantics ***/
+	my_shared_ptr(const my_shared_ptr & obj) // copy constructor
+	{
+		this->ptr = obj.ptr; // share the underlying pointer
+		this->refCount = obj.refCount;
+		if (nullptr != obj.ptr)
+		{
+			(*this->refCount)++; // if the pointer is not null, increment the refCount
+		}
+	}
 
-    SharedPointer& operator=(const SharedPointer& other) {
-        if (this != &other) {
-            // Decrement the old reference count
-            release();
+	my_shared_ptr& operator=(const my_shared_ptr & obj) // copy assignment
+	{
+		__cleanup__(); // cleanup any existing data
+		
+		// Assign incoming object's data to this object
+		this->ptr = obj.ptr; // share the underlying pointer
+		this->refCount = obj.refCount;
+		if (nullptr != obj.ptr)
+		{
+			(*this->refCount)++; // if the pointer is not null, increment the refCount
+		}
+	}
 
-            ptr = other.ptr;
-            refCount = other.refCount;
+	/*** Move Semantics ***/
+	my_shared_ptr(my_shared_ptr && dyingObj) // move constructor
+	{
+		this->ptr = dyingObj.ptr; // share the underlying pointer
+		this->refCount = dyingObj.refCount;
 
-            if (refCount) {
-                ++(*refCount);
-            }
-        }
-        return *this;
-    }
+		dyingObj.ptr = dyingObj.refCount = nullptr; // clean the dying object
+	}
 
-    ~SharedPointer() {
-        release();
-    }
+	my_shared_ptr& operator=(my_shared_ptr && dyingObj) // move assignment
+	{
+		__cleanup__(); // cleanup any existing data
+		
+		this->ptr = dyingObj.ptr; // share the underlying pointer
+		this->refCount = dyingObj.refCount;
 
-    T* get() const {
-        return ptr;
-    }
+		dyingObj.ptr = dyingObj.refCount = nullptr; // clean the dying object
+	}
 
-    T& operator*() const {
-        return *ptr;
-    }
+	uint get_count() const
+	{
+		return *refCount; // *this->refCount
+	}
 
-    T* operator->() const {
-        return ptr;
-    }
+	T* get() const
+	{
+		return this->ptr;
+	}
 
-    size_t useCount() const {
-        return (refCount ? *refCount : 0);
-    }
+	T* operator->() const
+	{
+		return this->ptr;
+	}
 
-    void reset() {
-        release();
-        ptr = nullptr;
-        refCount = nullptr;
-    }
+	T& operator*() const
+	{
+		return this->ptr;
+	}
+
+	~my_shared_ptr() // destructor
+	{
+		__cleanup__();
+	}
 
 private:
-    void release() {
-        if (refCount) {
-            --(*refCount);
-            if (*refCount == 0) {
-                delete ptr;
-                delete refCount;
-            }
-        }
-    }
+	void __cleanup__()
+	{
+		(*refCount)--;
+		if (*refCount == 0)
+		{
+			if (nullptr != ptr)
+				delete ptr;
+			delete refCount;
+		}
+	}
 };
 
-int main() {
-    SharedPointer<int> sp1(new int(42));
-    SharedPointer<int> sp2 = sp1;
-    SharedPointer<int> sp3;
-    sp3 = sp1;
-
-    std::cout << "Use count: " << sp1.useCount() << std::endl;
-
-    sp1.reset();
-    std::cout << "Use count after reset: " << sp2.useCount() << std::endl;
-
+class Box
+{
+public:
+    int length, width, height;
+    Box() : length(0), width(0), height(0)
+    {
+    }
+};
+int main()
+{
+    my_shared_ptr<Box> obj;
+    cout << obj.get_count() << endl; // prints 0
+    my_shared_ptr<Box> box1(new Box());
+    cout << box1.get_count() << endl; // prints 1
+    my_shared_ptr<Box> box2(box1); // calls copy constructor
+    cout << box1.get_count() << endl; // prints 2
+    cout << box2.get_count() << endl; // also prints 2
+ 
     return 0;
 }

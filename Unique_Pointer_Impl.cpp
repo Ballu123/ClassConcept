@@ -22,6 +22,8 @@
 
 template <typename T>
 class unique_ptr {
+private:
+    T* ptr_;
 public:
     // Constructor
     explicit unique_ptr(T* ptr = nullptr) : ptr_(ptr) {}
@@ -76,9 +78,6 @@ public:
     explicit operator bool() const noexcept {
         return ptr_ != nullptr;
     }
-
-private:
-    T* ptr_;
 };
 
 int main (){

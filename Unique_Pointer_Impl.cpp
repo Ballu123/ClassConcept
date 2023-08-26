@@ -43,7 +43,7 @@ public:
     }
 
     /*** Move Semantics ***/
-    //Assignment operator deleted
+    // Assignment operator deleted
     unique_ptr& operator=(const unique_ptr&) = delete;
 
     // Assignment operator

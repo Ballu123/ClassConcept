@@ -15,9 +15,9 @@
  
 #include <algorithm>
 #include <iostream>
-#include<malloc.h>
-#include<memory.h>
-#include<stdio.h>
+#include <malloc.h>
+#include <memory.h>
+#include <stdio.h>
 
 using namespace std;
 

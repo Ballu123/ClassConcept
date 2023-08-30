@@ -7,9 +7,9 @@
  * Ref: https://www.vishalchovatiya.com/unique_ptr-with-example-in-c/
  * Ref: https://blog.devgenius.io/unique-pointer-and-implementation-in-c-ec6599a518e5
  * Advantages of Unique Pointers:
- * 1.	Memory safety 2.	Single ownership 3.	Move semantics 4.	Custom deleters5.	Standard library support: 
+ * 1.	Memory safety     2. Single ownership    3. Move semantics    4. Custom deleters   5. Standard library support: 
  * Disadvantages of Unique Pointers:
- * 1.	Limited sharing 2.	Syntax complexity 3.	Custom deleter management 4.	Performance overhead
+ * 1.	Limited sharing   2. Syntax complexity   3.	Custom deleter management    4.	Performance overhead
  */
 
 #include<stdio.h>

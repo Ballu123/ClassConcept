@@ -30,6 +30,7 @@ class A
         : mLength(length), mData(new int[length]) {}
 
     // move constructor
+   // https://www.scaler.com/topics/cpp-move-constructor/
     A(A&& other)
     {
       mData = other.mData;
@@ -39,6 +40,7 @@ class A
     }
 
     // move assignment
+   // https://en.wikipedia.org/wiki/Move_assignment_operator
     A& operator=(A&& other) noexcept
     {
       mData =  other.mData;

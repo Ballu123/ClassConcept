@@ -4,8 +4,9 @@
  * Name of the file: ScheduleFunctionCall_without_async.cpp
  * If you want to achieve non-blocking behavior without using std::async, 
  * you can manage the scheduling and execution of tasks using a separate thread. Here's an example of using a worker thread to execute scheduled functions:
- * In this example, the Scheduler class manages a worker thread that processes tasks from a queue. The scheduleFunctionCall method adds tasks to the queue along with their desired delay.
- * The worker thread continuously checks the queue, sleeps for the specified delay, and then executes the tasks.
+ * In this example, the Scheduler class manages a worker thread that processes tasks from a queue. 
+ * The scheduleFunctionCall method adds tasks to the queue along with their desired delay.
+ * The worker thread continuously checks the queue, sleeps for the specified delay, and executes the tasks.
  * This approach provides non-blocking behavior without using std::async, but it does require more manual management of threads, synchronization, and resources.
  */
 

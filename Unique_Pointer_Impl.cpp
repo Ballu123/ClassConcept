@@ -9,7 +9,7 @@
  * Advantages of Unique Pointers:
  * 1.	Memory safety     2. Single ownership    3. Move semantics    4. Custom deleters   5. Standard library support: 
  * Disadvantages of Unique Pointers:
- * 1.	Limited sharing   2. Syntax complexity   3.	Custom deleter management    4.	Performance overhead
+ * 1.	Limited sharing   2. Syntax complexity   3.	Custom deleter management    4.	Performance overhead 
  */
 
 #include<stdio.h>

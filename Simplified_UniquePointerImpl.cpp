@@ -37,7 +37,7 @@ public:
     unique_ptr(const unique_ptr&) = delete;
     unique_ptr& operator=(const unique_ptr&) = delete;
 
-    / Move constructor and assignment operator
+    // Move constructor and assignment operator
     unique_ptr(unique_ptr&& other) noexcept : ptr_(other.ptr_) {
         other.ptr_ = nullptr;
     }
@@ -78,7 +78,8 @@ public:
     T* operator->() const noexcept {
         return ptr_;
     }
-    //This method is for to check the unique ptr is null or not
+
+    //This method is for check the unique ptr is null or not
     explicit operator bool() const noexcept {
         return ptr_ != nullptr;
     }

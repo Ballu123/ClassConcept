@@ -76,7 +76,7 @@ public:
     T* operator->() const noexcept {
         return ptr_;
     }
-
+    // this method is for to check the unique ptr is null or not
     explicit operator bool() const noexcept {
         return ptr_ != nullptr;
     }

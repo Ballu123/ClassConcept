@@ -9,129 +9,118 @@
  * Ref : https://www.vishalchovatiya.com/move-constructor-assignment-operator-with-shared-ptr/#l-value_reference_r-value_reference
  */
 
-typedef unsigned int uint;
+#include <iostream>
 
-template<class T>
-class my_shared_ptr
-{
+template<typename T>
+class SharedPtr {
 private:
-	T * ptr = nullptr;
-	uint * refCount = nullptr;
+    T* ptr;                 // Raw pointer to the object
+    unsigned* ref_count;    // Pointer to the reference count
 
 public:
-        // default constructor
-	my_shared_ptr() : ptr(nullptr), refCount(new uint(0))
-	{
-	}
-        // constructor
-	my_shared_ptr(T * ptr) : ptr(ptr), refCount(new uint(1)) 
-	{
-	}
+    // Constructor
+    explicit SharedPtr(T* p = nullptr) : ptr(p), ref_count(new unsigned(1)) {
+        if (!p) {
+            *ref_count = 0;
+        }
+    }
 
-	/*** Copy Semantics ***/
-        
-        // copy constructor
-	my_shared_ptr(const my_shared_ptr & obj) 
-	{
-		this->ptr = obj.ptr; // share the underlying pointer
-		this->refCount = obj.refCount;
-		if (nullptr != obj.ptr)
-		{
-			(*this->refCount)++; // if the pointer is not null, increment the refCount
-		}
-	}
-        
-        // copy assignment
-	my_shared_ptr& operator=(const my_shared_ptr & obj) 
-	{
-		__cleanup__(); // cleanup any existing data
-		
-		// Assign incoming object's data to this object
-		this->ptr = obj.ptr; // share the underlying pointer
-		this->refCount = obj.refCount;
-		if (nullptr != obj.ptr)
-		{
-			(*this->refCount)++; // if the pointer is not null, increment the refCount
-		}
-	}
+    // Copy constructor
+    SharedPtr(const SharedPtr& other) : ptr(other.ptr), ref_count(other.ref_count) {
+        if (ptr) {
+            (*ref_count)++;
+        }
+    }
 
-	/*** Move Semantics ***/
-        
-        // move constructor
-	my_shared_ptr(my_shared_ptr && dyingObj) 
-	{
-		this->ptr = dyingObj.ptr; // share the underlying pointer
-		this->refCount = dyingObj.refCount;
+    // Move constructor
+    SharedPtr(SharedPtr&& other) noexcept : ptr(other.ptr), ref_count(other.ref_count) {
+        other.ptr = nullptr;
+        other.ref_count = nullptr;
+    }
 
-		dyingObj.ptr = dyingObj.refCount = nullptr; // clean the dying object
-	}
-        
-        // move assignment
-	my_shared_ptr& operator=(my_shared_ptr && dyingObj)
-	{
-		__cleanup__(); // cleanup any existing data
-		
-		this->ptr = dyingObj.ptr; // share the underlying pointer
-		this->refCount = dyingObj.refCount;
+    // Copy assignment operator
+    SharedPtr& operator=(const SharedPtr& other) {
+        if (this != &other) {
+            // Decrement the old reference count and delete if necessary
+            if (ptr && --(*ref_count) == 0) {
+                delete ptr;
+                delete ref_count;
+            }
 
-		dyingObj.ptr = dyingObj.refCount = nullptr; // clean the dying object
-	}
+            // Copy the data from the other `SharedPtr`
+            ptr = other.ptr;
+            ref_count = other.ref_count;
 
-	uint get_count() const
-	{
-		return *refCount; // *this->refCount
-	}
+            // Increment the reference count
+            if (ptr) {
+                (*ref_count)++;
+            }
+        }
+        return *this;
+    }
 
-	T* get() const
-	{
-		return this->ptr;
-	}
+    // Move assignment operator
+    SharedPtr& operator=(SharedPtr&& other) noexcept {
+        if (this != &other) {
+            // Decrement the old reference count and delete if necessary
+            if (ptr && --(*ref_count) == 0) {
+                delete ptr;
+                delete ref_count;
+            }
 
-	T* operator->() const
-	{
-		return this->ptr;
-	}
+            // Transfer ownership
+            ptr = other.ptr;
+            ref_count = other.ref_count;
 
-	T& operator*() const
-	{
-		return this->ptr;
-	}
+            other.ptr = nullptr;
+            other.ref_count = nullptr;
+        }
+        return *this;
+    }
 
-	~my_shared_ptr() // destructor
-	{
-		__cleanup__();
-	}
+    // Destructor
+    ~SharedPtr() {
+        if (ptr && --(*ref_count) == 0) {
+            delete ptr;
+            delete ref_count;
+        }
+    }
 
-private:
-	void __cleanup__()
-	{
-		(*refCount)--;
-		if (*refCount == 0)
-		{
-			if (nullptr != ptr)
-				delete ptr;
-			delete refCount;
-		}
-	}
-};
+    // Dereference operator
+    T& operator*() const {
+        return *ptr;
+    }
 
-class Box
-{
-public:
-    int length, width, height;
-    Box() : length(0), width(0), height(0)
-    {
+    // Arrow operator
+    T* operator->() const {
+        return ptr;
+    }
+
+    // Get the raw pointer
+    T* get() const {
+        return ptr;
+    }
+
+    // Get the reference count
+    unsigned use_count() const {
+        return *ref_count;
     }
 };
-int main()
-{
-    my_shared_ptr<Box> obj;
-    cout << obj.get_count() << endl; // prints 0
-    my_shared_ptr<Box> box1(new Box());
-    cout << box1.get_count() << endl; // prints 1
-    my_shared_ptr<Box> box2(box1); // calls copy constructor
-    cout << box1.get_count() << endl; // prints 2
-    cout << box2.get_count() << endl; // also prints 2
- 
+
+int main() {
+    SharedPtr<int> sp1(new int(42));
+    std::cout << "sp1 count: " << sp1.use_count() << ", value: " << *sp1 << std::endl;
+
+    {
+        SharedPtr<int> sp2 = sp1;
+        std::cout << "sp2 count: " << sp2.use_count() << ", value: " << *sp2 << std::endl;
+    }
+
+    std::cout << "sp1 count after sp2 goes out of scope: " << sp1.use_count() << std::endl;
+
+    SharedPtr<int> sp3(new int(100));
+    sp3 = sp1;
+    std::cout << "sp3 count after assignment: " << sp3.use_count() << ", value: " << *sp3 << std::endl;
+
     return 0;
 }

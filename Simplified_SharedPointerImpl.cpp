@@ -34,6 +34,8 @@ public:
 
     // Move constructor
     SharedPtr(SharedPtr&& other) noexcept : ptr(other.ptr), ref_count(other.ref_count) {
+        // This indicates that other no longer owns the resource. This step is crucial to prevent other from trying to delete the resource 
+        //when it goes out of scope, which would lead to a double deletion
         other.ptr = nullptr;
         other.ref_count = nullptr;
     }
@@ -71,7 +73,7 @@ public:
             // Transfer ownership
             ptr = other.ptr;
             ref_count = other.ref_count;
-
+           // ensure other no longer points to the resources.
             other.ptr = nullptr;
             other.ref_count = nullptr;
         }

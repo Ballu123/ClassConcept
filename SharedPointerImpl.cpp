@@ -50,6 +50,7 @@ public:
     m_ReferenceCount->Increment();
     cout << "Created smart_ptr! Ref count is " << m_ReferenceCount->GetCount() << endl;
   }
+
   //Destructor
   virtual ~smart_ptr()
   {
@@ -66,6 +67,7 @@ public:
       }
     }
   }
+
   // Copy Constructor
   smart_ptr(const smart_ptr<T>& other) : m_Object{ other.m_Object }, m_ReferenceCount{ other.m_ReferenceCount }
   {
@@ -73,6 +75,7 @@ public:
     cout << "Copied smart_ptr! Ref count is "
       << m_ReferenceCount->GetCount() << endl;
   }
+
   // Overloaded Assignment Operator
   smart_ptr<T>& operator=(const smart_ptr<T>& other)
   {
@@ -90,16 +93,19 @@ public:
     cout << "Assigning smart_ptr! Ref count is " << m_ReferenceCount->GetCount() << endl;
     return *this;
   }
+
   //Dereference operator
   T& operator*()
   {
     return *m_Object;
   }
+
   //Member Access operator
   T* operator->()
   {
     return m_Object;
   }
+
 };
 class AirCraft
 {

@@ -32,14 +32,6 @@ public:
         }
     }
 
-    // Move constructor
-    SharedPtr(SharedPtr&& other) noexcept : ptr(other.ptr), ref_count(other.ref_count) {
-        // This indicates that other no longer owns the resource. This step is crucial to prevent other from trying to delete the resource 
-        //when it goes out of scope, which would lead to a double deletion
-        other.ptr = nullptr;
-        other.ref_count = nullptr;
-    }
-
     // Copy assignment operator
     SharedPtr& operator=(const SharedPtr& other) {
         if (this != &other) {
@@ -59,6 +51,14 @@ public:
             }
         }
         return *this;
+    }
+
+    // Move constructor
+    SharedPtr(SharedPtr&& other) noexcept : ptr(other.ptr), ref_count(other.ref_count) {
+        // This indicates that other no longer owns the resource. This step is crucial to prevent other from trying to delete the resource 
+        //when it goes out of scope, which would lead to a double deletion
+        other.ptr = nullptr;
+        other.ref_count = nullptr;
     }
 
     // Move assignment operator

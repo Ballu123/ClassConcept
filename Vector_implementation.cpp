@@ -1,5 +1,11 @@
-
-
+/*
+ * Name: Balram Panwar
+ * Email id: balram.panwar@gmail.com
+ * Name of the file: Vector_implementation.cpp
+ * Win10
+ * Microsoft Visual Studio
+ */
+ 
 #include <iostream>
 #include <stdexcept>
 

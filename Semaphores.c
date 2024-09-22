@@ -1,7 +1,7 @@
 /*
  * Name: Balram Panwar
  * Email id: balram.panwar@gmail.com
- * Name of the file: POSIX_Semaphores.c
+ * Name of the file: Semaphores.c
  * Platform: Linux
  * To rotate an array to the left by k positions using a thread and semaphore,
  */

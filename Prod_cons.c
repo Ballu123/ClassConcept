@@ -4,11 +4,14 @@
  * Name of the file: prod_cons.c
  * Win10
  * Microsoft Visual Studio
- * This program demonstrates a simple producer-consumer problem solution using pthreads with proper synchronization to avoid race conditions. 
+ * This program demonstrates a Thread safe producer-consumer problem solution using pthreads with proper synchronization to avoid race conditions. 
  * The producer and consumer run indefinitely, producing and consuming items from the shared buffer.
- * cond_producer is a condition variable to signal the producer when there is space in the buffer. cond_consumer is a condition variable to signal the consumer when there are items in the buffer.
- * Produces items and adds them to the buffer. If the buffer is full, it waits for the consumer to consume an item. Signals the consumer whenever it adds a new item to the buffer.
- * Consumes items from the buffer. If the buffer is empty, it waits for the producer to produce an item. Signals the producer whenever it consumes an item from the buffer
+ * cond_producer is a condition variable to signal the producer when there is space in the buffer. 
+ * cond_consumer is a condition variable to signal the consumer when there are items in the buffer.
+ * Produces items and adds them to the buffer. If the buffer is full, it waits for the consumer to consume an item. 
+ * Signals the consumer whenever it adds a new item to the buffer.
+ * Consumes items from the buffer. If the buffer is empty, it waits for the producer to produce an item. 
+ * Signals the producer whenever it consumes an item from the buffer
  */
 
 #include <stdio.h>

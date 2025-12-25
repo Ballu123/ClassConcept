@@ -35,7 +35,10 @@ static FreeBlock *free_list = NULL;
 static pthread_mutex_t pool_mutex;
 static sem_t free_blocks;
 
-/* Initialize pool */
+/* Initialize pool
+pool_init() initializes a memory pool by linking all fixed-size blocks into a singly linked free list,
+allowing constant-time allocation and deallocation without heap fragmentation.
+*/
 void pool_init(void) {
     for (int i = 0; i < POOL_SIZE - 1; i++) {
         ((FreeBlock *)memory_pool[i])->next =
@@ -62,7 +65,10 @@ void *pool_alloc(void) {
     return block;
 }
 
-/* Free memory */
+/* Free memory
+When freeing a block, the allocator inserts it at the head of the free list by storing the old head 
+pointer inside the freed block and updating the free-list head, achieving constant-time deallocation.
+*/
 void pool_free(void *ptr) {
     if (!ptr) return;
 

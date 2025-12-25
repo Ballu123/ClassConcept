@@ -74,3 +74,19 @@ void pool_free(void *ptr) {
     pthread_mutex_unlock(&pool_mutex);
     sem_post(&free_blocks);   // signal availability
 }
+
+/* Example usage */
+int main(void) {
+    pool_init();
+
+    void *p1 = pool_alloc();
+    void *p2 = pool_alloc();
+
+    printf("Allocated: %p %p\n", p1, p2);
+
+    pool_free(p1);
+    pool_free(p2);
+
+    printf("Memory returned to pool\n");
+    return 0;
+}

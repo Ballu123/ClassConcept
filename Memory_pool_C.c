@@ -45,9 +45,10 @@ void pool_init(void) {
         ((FreeBlock *)memory_pool[i])->next =
             (FreeBlock *)memory_pool[i + 1];
     }
-    //The last block will be handled separately
+    //The last block will be handled separately. The last block has no next block:This marks the end of the free list.
     ((FreeBlock *)memory_pool[POOL_SIZE - 1])->next = NULL;
-
+    
+    //The first free block is block 0. Allocation will start from here
     free_list = (FreeBlock *)memory_pool[0];
 
     pthread_mutex_init(&pool_mutex, NULL);

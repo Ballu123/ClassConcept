@@ -41,9 +41,11 @@ allowing constant-time allocation and deallocation without heap fragmentation.
 */
 void pool_init(void) {
     for (int i = 0; i < POOL_SIZE - 1; i++) {
+        //Because each block points to the next block
         ((FreeBlock *)memory_pool[i])->next =
             (FreeBlock *)memory_pool[i + 1];
     }
+    //The last block will be handled separately
     ((FreeBlock *)memory_pool[POOL_SIZE - 1])->next = NULL;
 
     free_list = (FreeBlock *)memory_pool[0];

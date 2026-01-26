@@ -32,8 +32,9 @@ public:
     ~unique_ptr() {
         delete ptr_;
     }
-
-    // Copy constructor and assignment operator deleted
+    
+    // Copy constructor and assignment operator deleted it is designed to enforce sole ownership of the dynamically allocated object it manages. 
+    //This is a core feature of the unique pointer, preventing multiple pointers from pointing to the same resource and potentially causing a double-free error when they both go out of scope
     unique_ptr(const unique_ptr&) = delete;
     unique_ptr& operator=(const unique_ptr&) = delete;
 

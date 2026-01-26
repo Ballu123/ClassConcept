@@ -33,17 +33,18 @@ public:
         delete ptr_;
     }
     
-    // Copy constructor and assignment operator deleted it is designed to enforce sole ownership of the dynamically allocated object it manages. 
+    // Copy constructor and copy assignment operator deleted it is designed to enforce sole ownership of the dynamically allocated object it manages. 
     //This is a core feature of the unique pointer, preventing multiple pointers from pointing to the same resource 
    //and potentially causing a double-free error when they both go out of scope
     unique_ptr(const unique_ptr&) = delete;
     unique_ptr& operator=(const unique_ptr&) = delete;
 
-    // Move constructor and assignment operator
+    // Move constructor 
     unique_ptr(unique_ptr&& other) noexcept : ptr_(other.ptr_) {
         other.ptr_ = nullptr;
     }
 
+    //Move assignment operator
     unique_ptr& operator=(unique_ptr&& other) noexcept {
         if (this != &other) {
             delete ptr_; // Delete the current resource

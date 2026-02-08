@@ -84,7 +84,7 @@ int main() {
     return 0;
 }
 
-** 2nd way **
+__ 2nd way __
 #include <iostream>
 #include <vector>
 #include <thread>

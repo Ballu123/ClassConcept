@@ -64,6 +64,7 @@ int main() {
     sem_init(&semC, 0, 0);  // semC starts at 0, blocking Thread C
 
     // Create threads
+    // 2nd parameter is use to set thread attribute like stack size but here by default value we are using, it is NULL
     pthread_create(&tA, NULL, threadA, NULL);
     pthread_create(&tB, NULL, threadB, NULL);
     pthread_create(&tC, NULL, threadC, NULL);

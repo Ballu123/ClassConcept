@@ -77,6 +77,8 @@ int main() {
     // If you want to terminate it gracefully, you should implement a way to stop the threads
 
     // Wait for all threads to finish (this will never happen in this case)
+    // 2nd parameter: 	A pointer to a location where the thread's exit status (return value) will be stored. 
+    // Pass NULL if you don't care about the return value.
     pthread_join(tA, NULL);
     pthread_join(tB, NULL);
     pthread_join(tC, NULL);

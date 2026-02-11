@@ -57,6 +57,8 @@ int main() {
     pthread_t tA, tB, tC;
 
     // Initialize semaphores
+    // pshared = 0 (threads), value = 1 (one thread at a time) 
+    //	0: Shared between threads of the same process. Non-zero: Shared between processes (requires shared memory).
     sem_init(&semA, 0, 1);  // semA starts at 1, allowing Thread A to start
     sem_init(&semB, 0, 0);  // semB starts at 0, blocking Thread B
     sem_init(&semC, 0, 0);  // semC starts at 0, blocking Thread C

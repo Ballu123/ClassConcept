@@ -11,7 +11,43 @@
  * This implementation prevents data races and guarantees safe access to the shared resources of the FIFO queue.
  * atul: https://github.com/atulraut/atclib/blob/master/thread/crack-d-ivi/producerconsumer.c
  */
+============================
+                Circular Buffer
 
+          +-----------------------+
+          |                       |
+Producer->|  head           tail   |<-Consumer
+          |                       |
+          +-----------------------+
+
+             ↑            ↑
+             |            |
+
+          Mutex      Semaphores
+===============================
+                Producer
+         sem_wait(empty)
+                │
+          pthread_mutex_lock()
+                │
+          Write into Buffer
+                │
+        pthread_mutex_unlock()
+                │
+          sem_post(full)
+-------------------------------------
+            Consumer
+          sem_wait(full)
+                │
+         pthread_mutex_lock()
+                │
+          Read from Buffer
+                │
+         pthread_mutex_unlock()
+                │
+          sem_post(empty)
+//Semaphores only count resources (available slots or available items). They do not protect the critical section where shared variables such as head, tail, count, and the buffer itself are updated.
+// The mutex ensures only one thread modifies the shared buffer metadata at a time.
 #include <iostream>
 #include <vector>
 #include <mutex>

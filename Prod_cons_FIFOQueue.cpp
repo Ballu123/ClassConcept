@@ -48,6 +48,79 @@ Producer->|  head           tail   |<-Consumer
           sem_post(empty)
 //Semaphores only count resources (available slots or available items). They do not protect the critical section where shared variables such as head, tail, count, and the buffer itself are updated.
 // The mutex ensures only one thread modifies the shared buffer metadata at a time.
+  
+// To make a circular buffer thread-safe, I protect the shared state (head, tail, count, and the buffer) with a mutex. 
+// I use two semaphores: empty to track available slots and full to track available data. 
+// The producer waits on empty, acquires the mutex, writes data, releases the mutex, and signals full. The consumer waits on full, acquires the mutex, reads data, releases the mutex, and signals empty. 
+// This eliminates race conditions, prevents buffer overflow/underflow, and supports efficient producer-consumer synchronization."
+-------------1st way---------------------
+#include <stdio.h>
+#include <pthread.h>
+#include <semaphore.h>
+
+#define SIZE 8
+
+int buffer[SIZE];
+int head = 0;
+int tail = 0;
+
+pthread_mutex_t mutex;
+
+sem_t empty;
+sem_t full;
+
+void *producer(void *arg)
+{
+    for(int i=1;i<=20;i++)
+    {
+        sem_wait(&empty);
+        pthread_mutex_lock(&mutex);
+        buffer[head] = i;
+        printf("Produced %d\n",i);
+        head = (head + 1) % SIZE;
+        pthread_mutex_unlock(&mutex);
+        sem_post(&full);
+    }
+    return NULL;
+}
+
+void *consumer(void *arg)
+{
+    int data;
+    for(int i=1;i<=20;i++)
+    {
+        sem_wait(&full);
+        pthread_mutex_lock(&mutex);
+        data = buffer[tail];
+        printf("Consumed %d\n",data);
+        tail = (tail + 1) % SIZE;
+        pthread_mutex_unlock(&mutex);
+        sem_post(&empty);
+    }
+    return NULL;
+}
+
+int main()
+{
+    pthread_t p,c;
+    pthread_mutex_init(&mutex,NULL);
+    sem_init(&empty,0,SIZE);
+    sem_init(&full,0,0);
+
+    pthread_create(&p,NULL,producer,NULL);
+    pthread_create(&c,NULL,consumer,NULL);
+
+    pthread_join(p,NULL);
+    pthread_join(c,NULL);
+
+    sem_destroy(&empty);
+    sem_destroy(&full);
+    pthread_mutex_destroy(&mutex);
+
+    return 0;
+}
+
+-------------2nd way---------------------
 #include <iostream>
 #include <vector>
 #include <mutex>
@@ -120,7 +193,7 @@ int main() {
     return 0;
 }
 
-__ 2nd way __
+-------------3rd way---------------------
 #include <iostream>
 #include <vector>
 #include <thread>

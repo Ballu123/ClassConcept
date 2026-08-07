@@ -15,75 +15,145 @@
 #include <iostream>
 #include <vector>
 
-template <typename T>
-class CircularBuffer {
-private:
-    std::vector<T> buffer;
-    size_t capacity;
-    size_t readIndex;
-    size_t writeIndex;
-    bool full;
+#include <stdio.h>
+#include <stdint.h>
+#include <stdbool.h>
 
-public:
-    CircularBuffer(size_t size) : buffer(size), capacity(size), readIndex(0), writeIndex(0), full(false) {}
+#define BUFFER_SIZE 8
 
-    bool isEmpty() const {
-        return !full && (readIndex == writeIndex);
+typedef struct
+{
+    uint8_t buffer[BUFFER_SIZE];
+    int head;       // Write index
+    int tail;       // Read index
+    int count;      // Number of elements
+} CircularBuffer;
+
+/*--------------------------------------------------
+ Initialize Buffer
+---------------------------------------------------*/
+void initBuffer(CircularBuffer *cb)
+{
+    cb->head = 0;
+    cb->tail = 0;
+    cb->count = 0;
+}
+
+/*--------------------------------------------------
+ Check Empty
+---------------------------------------------------*/
+bool isEmpty(CircularBuffer *cb)
+{
+    return (cb->count == 0);
+}
+
+/*--------------------------------------------------
+ Check Full
+---------------------------------------------------*/
+bool isFull(CircularBuffer *cb)
+{
+    return (cb->count == BUFFER_SIZE);
+}
+
+/*--------------------------------------------------
+ Write Data
+ Returns:
+   true  -> Success
+   false -> Buffer Full
+---------------------------------------------------*/
+bool writeBuffer(CircularBuffer *cb, uint8_t data)
+{
+    if (isFull(cb))
+    {
+        printf("Buffer Overflow!\n");
+        return false;
+    }
+    cb->buffer[cb->head] = data;
+    cb->head = (cb->head + 1) % BUFFER_SIZE;
+    cb->count++;
+    return true;
+}
+
+/*--------------------------------------------------
+ Read Data
+ Returns:
+   true  -> Success
+   false -> Buffer Empty
+---------------------------------------------------*/
+bool readBuffer(CircularBuffer *cb, uint8_t *data)
+{
+    if (isEmpty(cb))
+    {
+        printf("Buffer Underflow!\n");
+        return false;
+    }
+    *data = cb->buffer[cb->tail];
+    cb->tail = (cb->tail + 1) % BUFFER_SIZE;
+    cb->count--;
+    return true;
+}
+
+/*--------------------------------------------------
+ Print Buffer
+---------------------------------------------------*/
+void printBuffer(CircularBuffer *cb)
+{
+    printf("\nBuffer Contents:\n");
+
+    if (isEmpty(cb))
+    {
+        printf("Buffer Empty\n");
+        return;
+    }
+    int index = cb->tail;
+    for (int i = 0; i < cb->count; i++)
+    {
+        printf("%d ", cb->buffer[index]);
+        index = (index + 1) % BUFFER_SIZE;
+    }
+    printf("\n");
+}
+
+/*--------------------------------------------------
+ Get Current Size
+---------------------------------------------------*/
+int size(CircularBuffer *cb)
+{
+    return cb->count;
+}
+
+/*--------------------------------------------------
+ Main
+---------------------------------------------------*/
+int main()
+{
+    CircularBuffer cb;
+    uint8_t data;
+
+    initBuffer(&cb);
+    printf("Writing...\n");
+
+    for(int i=1;i<=8;i++)
+        writeBuffer(&cb,i*10);
+
+    printBuffer(&cb);
+
+    printf("\nTrying Overflow...\n");
+    writeBuffer(&cb,99);
+
+    printf("\nReading...\n");
+
+    while(readBuffer(&cb,&data))
+    {
+        printf("%d ",data);
     }
 
-    bool isFull() const {
-        return full;
-    }
+    printf("\n");
 
-    size_t size() const {
-        if (full) {
-            return capacity;
-        } else if (writeIndex >= readIndex) {
-            return writeIndex - readIndex;
-        } else {
-            return capacity - (readIndex - writeIndex);
-        }
-    }
+    printf("\nTrying Underflow...\n");
+    readBuffer(&cb,&data);
 
-    bool enqueue(const T& item) {
-        if (full) {
-            return false; // Buffer is full, cannot enqueue
-        }
-
-        buffer[writeIndex] = item;
-        writeIndex = (writeIndex + 1) % capacity;
-
-        if (writeIndex == readIndex) {
-            full = true;
-        }
-
-        return true;
-    }
-
-    bool dequeue(T& item) {
-        if (isEmpty()) {
-            return false; // Buffer is empty, cannot dequeue
-        }
-
-        item = buffer[readIndex];
-        readIndex = (readIndex + 1) % capacity;
-        full = false;
-
-        return true;
-    }
-};
-
-int main() {
-    CircularBuffer<int> buffer(5);
-
-    buffer.enqueue(10);
-    buffer.enqueue(20);
-    buffer.enqueue(30);
-
-    int item;
-    while (buffer.dequeue(item)) {
-        std::cout << "Dequeued: " << item << std::endl;
-    }
+    printf("\nCurrent Size = %d\n",size(&cb));
 
     return 0;
 }

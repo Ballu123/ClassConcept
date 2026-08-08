@@ -5,42 +5,117 @@
  * Win10
  * Microsoft Visual Studio
  */
+=====
+                        returned pointer
+                              |
+                              v
+0x1000       0x1004       0x1010
+   |             |            |
+   v             v            v
++------+---------+------------+----------------------+
+|      |         |            |                      |
+|      | metadata| unused     |    USER MEMORY       |
+|      | 16      |            |       100 bytes      |
++------+---------+------------+----------------------+
+       <-------->
+        12 + 4
+Actually, the metadata sits immediately before the returned pointer:
+                 returned pointer
+                       |
+                       v
+              +--------+----------------------+
+              | offset |      user data       |
+              +--------+----------------------+
+              ^
+              |
+        aligned address - 4
  
-#include <iostream>
+The stored value is:
+offset + 4
+So free() knows how far backward to go.
+
+=====
+malloc()
+   |
+   v
++--------+--------+-------------------+
+| extra  | offset | aligned user data |
++--------+--------+-------------------+
+                   ^
+                   |
+                 return
+
+free():
+return ptr
+    ↓
+read offset
+    ↓
+recover malloc pointer
+    ↓
+free(original)
+=====
+Remember: malloc → move → remember → return and read → move back → free.
+====
 #include <stdio.h>
-#include <malloc.h>
+#include <stdlib.h>
+#include <stdint.h>
 
-void* aligned_malloc( size_t required_bytes ,size_t alignment ) {
-  void* p1 ; //aligned initial block
-  void* p2 ;// aligned block inside initial block
- 
-  // if alignment is 16, we need to allocate an extra 15 required_bytes
-  // 15bytes + 100bytes right after that sequences, 
-  //Now,memory address divisible by 16 with space for 100 bytes
-  int offset = alignment -1 + sizeof(void*);
-  if ((p1 = (void*)malloc(required_bytes + offset)) == NULL) {
-    return NULL;
-  }
- 
-  // if alignment is 16, then one of the first 16 memory address
-  // in the block at p must be divisible by 16. 
-  // with (p+ 15) & 11...10000 we advance as need to this address
-  // Adding the last four bits of p+ 15 with 0000 guarantees that this new
-  //value will be divisible by 16.
-  p2 = (void*)(((size_t)(p1) + offset) & ~(alignment - 1)); 
-  ((void**)p2)[-1] = p1;
-  return p2;
-}
-
-void aligned_free(void *p2) {
-  void* p1 = ((void**)p2)[-1];
-  free(p1);
-}
-
-int main (int argc, char *argv[])
+void *aligned_malloc(size_t size, size_t alignment)
 {
-    int *p = (int*)aligned_malloc(100, 16);
-    printf (": %p\n", p);
-    aligned_free (p);
+    uintptr_t raw;
+    uintptr_t aligned;
+    size_t offset;
+
+    /* Allocate extra space for alignment + metadata */
+    raw = (uintptr_t)malloc(size + alignment + sizeof(size_t));
+
+    if (raw == 0)
+        return NULL;
+
+    /* Move past space reserved for metadata */
+    aligned = raw + sizeof(size_t);
+
+    /* Calculate how much to move for alignment */
+    offset = alignment - (aligned % alignment);
+
+    /* Move to aligned address */
+    aligned += offset;
+
+    /* Store distance back to original malloc pointer */
+    *((size_t *)(aligned - sizeof(size_t))) =
+        offset + sizeof(size_t);
+
+    return (void *)aligned;
+}
+
+void aligned_free(void *ptr)
+{
+    size_t offset;
+
+    if (ptr == NULL)
+        return;
+
+    /* Read stored offset */
+    offset = *((size_t *)((uintptr_t)ptr - sizeof(size_t)));
+
+    /* Recover original malloc pointer */
+    void *raw = (void *)((uintptr_t)ptr - offset);
+
+    free(raw);
+}
+
+int main()
+{
+    void *ptr = aligned_malloc(100, 64);
+
+    if (ptr == NULL)
+        return 1;
+
+    printf("Address = %p\n", ptr);
+    printf("Address %% 64 = %lu\n",
+           (unsigned long)((uintptr_t)ptr % 64));
+
+    aligned_free(ptr);
+
     return 0;
 }

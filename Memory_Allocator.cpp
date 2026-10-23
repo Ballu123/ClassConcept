@@ -67,6 +67,24 @@ HEAP START
 │  HEADER    │         DATA (128 bytes)      │  Block 4 (free)
 └────────────┴──────────────────────────────┘
 HEAP END
+
+--------------------------------------------
+Allocator Strategies Compared
+┌──────────────┬────────────────────────────────────┐
+│ Strategy     │ How it finds a free block           │
+├──────────────┼────────────────────────────────────┤
+│ First Fit    │ First block that is big enough      │
+│              │ Fast but leaves small fragments     │
+├──────────────┼────────────────────────────────────┤
+│ Best Fit     │ Smallest block that fits            │
+│              │ Less waste but slower to find       │
+├──────────────┼────────────────────────────────────┤
+│ Worst Fit    │ Largest block available             │
+│              │ Leaves largest remainder            │
+├──────────────┼────────────────────────────────────┤
+│ Memory Pool  │ Any block from fixed-size pool      │
+│              │ O(1), no fragmentation              │
+└──────────────┴────────────────────────────────────┘
 =================================================================================
 #include <stdio.h>
 #include <stdint.h>

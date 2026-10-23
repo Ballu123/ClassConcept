@@ -17,8 +17,8 @@
  * Prevents overflow/underflow automatically
  */
 ===============================================================================
-    General allocator:  variable size blocks → fragmentation
-Memory Pool:        fixed size blocks   → zero fragmentation
+General allocator:  variable-size blocks → fragmentation
+Memory Pool:        fixed size blocks   → zero fragmentation,  O(1) alloc and free
 
 Pool of 32-byte blocks:
 ┌────┬────┬────┬────┬────┬────┬────┬────┐

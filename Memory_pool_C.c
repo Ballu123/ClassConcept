@@ -138,6 +138,54 @@ void pool_dump(MemPool *mp) {
            POOL_BLOCK_COUNT);
     printf("────────────────────────────────────\n\n");
 }
+
+int main(void) {
+
+    /*── Test General Allocator ──*/
+    printf("══════════════════════════════\n");
+    printf("  General Purpose Allocator\n");
+    printf("══════════════════════════════\n");
+    mem_init();
+    mem_dump();
+
+    void *a = mem_alloc(32);
+    void *b = mem_alloc(64);
+    void *c = mem_alloc(16);
+    mem_dump();
+
+    mem_free(b);             // free middle block
+    mem_dump();              // see coalescing
+
+    void *d = mem_alloc(48); // reuse freed space
+    mem_dump();
+
+    mem_free(a);
+    mem_free(c);
+    mem_free(d);
+    mem_dump();              // should be one big free block
+
+    /*── Test Memory Pool ──*/
+    printf("══════════════════════════════\n");
+    printf("  Memory Pool Allocator\n");
+    printf("══════════════════════════════\n");
+    MemPool pool;
+    pool_init(&pool);
+    pool_dump(&pool);
+
+    void *p1 = pool_alloc(&pool);
+    void *p2 = pool_alloc(&pool);
+    void *p3 = pool_alloc(&pool);
+    pool_dump(&pool);
+
+    pool_free(&pool, p1);
+    pool_free(&pool, p2);
+    pool_dump(&pool);
+
+    pool_free(&pool, p3);
+    pool_dump(&pool);       // all blocks back
+
+    return 0;
+}
 ----------------------------------------------------------------------------------------------
 ---------------------------2nd way-------------------------------------------------------------
 #include <stdio.h>

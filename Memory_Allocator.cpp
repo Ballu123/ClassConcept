@@ -5,13 +5,14 @@
  * Win10
  * Microsoft Visual Studio
 */
+===============================================================================
 What is a Memory Allocator?
 Problem:
   Programs need memory at runtime
   but don't know HOW MUCH or WHEN ahead of time
 
 Solution:
-  Memory Allocator manages a large chunk of RAM
+  A memory allocator manages a large chunk of RAM
   and hands out pieces on request
 
   malloc(100) → give me 100 bytes
@@ -66,7 +67,7 @@ HEAP START
 │  HEADER    │         DATA (128 bytes)      │  Block 4 (free)
 └────────────┴──────────────────────────────┘
 HEAP END
-
+=================================================================================
 #include <stdio.h>
 #include <stdint.h>
 #include <stdbool.h>

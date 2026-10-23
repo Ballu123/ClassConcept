@@ -55,7 +55,91 @@ free_list → [block3] → [block2] → [block1] → [block0] → NULL
 
 block3 back on list — its memory now holds next pointer again
 
-================================================================================
+=====================================================================================================
+-------------------------------1stway-------------------------------------------------------------------
+/*─────────────────────────────────────────────
+  Memory Pool — Fixed Size Block Allocator
+  Zero fragmentation, O(1) alloc and free
+─────────────────────────────────────────────*/
+#define POOL_BLOCK_SIZE   32    // each block = 32 bytes
+#define POOL_BLOCK_COUNT  16    // 16 blocks total
+
+// Free list node — stored INSIDE the free block itself
+typedef struct FreeNode {
+    struct FreeNode *next;
+} FreeNode;
+
+typedef struct {
+    uint8_t   pool[POOL_BLOCK_SIZE * POOL_BLOCK_COUNT];
+    FreeNode *free_list;        // head of free list
+    uint32_t  free_count;       // blocks available
+} MemPool;
+
+/*──── Pool Init ───────────────────────────*/
+void pool_init(MemPool *mp) {
+    mp->free_list  = NULL;
+    mp->free_count = POOL_BLOCK_COUNT;
+
+    // Link all blocks into free list
+    // Free list pointer lives INSIDE the free block
+    for (int i = 0; i < POOL_BLOCK_COUNT; i++) {
+        FreeNode *node = (FreeNode *)
+            (mp->pool + i * POOL_BLOCK_SIZE);
+        node->next    = mp->free_list;
+        mp->free_list = node;
+    }
+
+    printf("[POOL] Init: %d blocks x %d bytes = %d bytes\n",
+           POOL_BLOCK_COUNT,
+           POOL_BLOCK_SIZE,
+           POOL_BLOCK_SIZE * POOL_BLOCK_COUNT);
+}
+
+/*──── Pool Alloc — O(1) ───────────────────*/
+void *pool_alloc(MemPool *mp) {
+    if (!mp->free_list) {
+        printf("[POOL] Out of blocks!\n");
+        return NULL;
+    }
+
+    // Pop from free list head
+    FreeNode *node = mp->free_list;
+    mp->free_list  = node->next;
+    mp->free_count--;
+
+    printf("[POOL] Alloc block @ %p (free=%u)\n",
+           (void*)node, mp->free_count);
+
+    memset(node, 0, POOL_BLOCK_SIZE);  // clear block
+    return (void *)node;
+}
+
+/*──── Pool Free — O(1) ────────────────────*/
+void pool_free(MemPool *mp, void *ptr) {
+    if (!ptr) return;
+
+    // Push back onto free list head
+    FreeNode *node = (FreeNode *)ptr;
+    node->next     = mp->free_list;
+    mp->free_list  = node;
+    mp->free_count++;
+
+    printf("[POOL] Free block @ %p (free=%u)\n",
+           ptr, mp->free_count);
+}
+
+/*──── Pool Status ─────────────────────────*/
+void pool_dump(MemPool *mp) {
+    printf("\n── Pool Status ─────────────────────\n");
+    printf("  Free blocks : %u / %u\n",
+           mp->free_count, POOL_BLOCK_COUNT);
+    printf("  Used blocks : %u / %u\n",
+           POOL_BLOCK_COUNT - mp->free_count,
+           POOL_BLOCK_COUNT);
+    printf("────────────────────────────────────\n\n");
+}
+----------------------------------------------------------------------------------------------
+---------------------------2nd way-------------------------------------------------------------
 #include <stdio.h>
 #include <stdint.h>
 #include <pthread.h>

@@ -1,7 +1,7 @@
 /*
  * Name: Balram Panwar
  * Email ID: balram.panwar@gmail.com
- * Name of the file: Memory_Allocator.cpp
+ * Name of the file: Memory_Allocator.c
  * Win10
  * Microsoft Visual Studio
 */

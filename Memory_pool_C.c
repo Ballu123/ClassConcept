@@ -16,7 +16,46 @@
  * Mutex → protect free list structure
  * Prevents overflow/underflow automatically
  */
+===============================================================================
+    General allocator:  variable size blocks → fragmentation
+Memory Pool:        fixed size blocks   → zero fragmentation
 
+Pool of 32-byte blocks:
+┌────┬────┬────┬────┬────┬────┬────┬────┐
+│ 32 │ 32 │ 32 │ 32 │ 32 │ 32 │ 32 │ 32 │
+│FREE│USED│FREE│FREE│USED│FREE│FREE│USED│
+└────┴────┴────┴────┴────┴────┴────┴────┘
+         ↑              ↑
+      allocated      allocated
+
+Free list: FREE→FREE→FREE→FREE→FREE→NULL
+--------------------------------------------------------------
+Free List — How It Works Inside
+BEFORE any allocation:
+
+pool memory:
+[block0][block1][block2][block3]...
+
+free_list → [block3] → [block2] → [block1] → [block0] → NULL
+
+Each FREE block stores the "next" pointer
+INSIDE its own memory (no extra overhead!)
+
+
+AFTER pool_alloc() called:
+
+free_list → [block2] → [block1] → [block0] → NULL
+
+block3 returned to user — its memory now holds user data
+
+
+AFTER pool_free(block3):
+
+free_list → [block3] → [block2] → [block1] → [block0] → NULL
+
+block3 back on list — its memory now holds next pointer again
+
+================================================================================
 #include <stdio.h>
 #include <stdint.h>
 #include <pthread.h>

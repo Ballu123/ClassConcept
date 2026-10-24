@@ -8,6 +8,7 @@
  */
 ===============================1st way --i am following=========================
 //Using HashMap and Doubly Linked List 
+//https://algorithms.tutorialhorizon.com/least-recently-used-lru-cache-using-hashmap-and-doubly-linked-list-set-1/
     
 //Doubly Linked List: For each item, we will create a Node for a doubly-linked list. The Node will have item value and 
 //next and previous node references. The list will represent the cache and order. So each time item will be referred 

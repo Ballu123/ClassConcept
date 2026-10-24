@@ -7,7 +7,15 @@
  * Ref: http://bhrigu.me/blog/2017/01/22/lru-cache-c-plus-plus-implementation/
  */
 ===============================1st way --i am following=========================
-    #include <iostream>
+//Using HashMap and Doubly Linked List 
+//Doubly Linked List: For each item, we will create a Node for a doubly-linked list. The Node will have item value and 
+//next and previous node references. The list will represent the cache and order. So each time item will be referred 
+//or looked or accessed the nodes in the list will change the orders accordingly. Click here to read about Doubly Linked List.
+
+//HashMap: Map will be used to check if the item is present in the cache in O(1) time. In key-value pairs, 
+//the item will be the key and Node (doubly linked list node) will be its value. Every time item becomes the part of a cache, we will put 
+//that item in the map as well and vice versa, when the item is deleted from the cache, we will delete it from the map.
+#include <iostream>
 #include <unordered_map>
 
 class Node {

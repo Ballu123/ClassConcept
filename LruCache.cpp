@@ -8,6 +8,7 @@
  */
 ===============================1st way --i am following=========================
 //Using HashMap and Doubly Linked List 
+    
 //Doubly Linked List: For each item, we will create a Node for a doubly-linked list. The Node will have item value and 
 //next and previous node references. The list will represent the cache and order. So each time item will be referred 
 //or looked or accessed the nodes in the list will change the orders accordingly. Click here to read about Doubly Linked List.

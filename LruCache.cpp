@@ -1,12 +1,129 @@
 /*
- * Name:Balram Panwar
- * Email id: balram.panwar@gmail.com
+ * Name: Balram Panwar
+ * Email ID: balram.panwar@gmail.com
  * Name of the file: LruCache.cpp
  * Win10
  * Microsoft Visual Studio
- * ref : http://bhrigu.me/blog/2017/01/22/lru-cache-c-plus-plus-implementation/
+ * Ref: http://bhrigu.me/blog/2017/01/22/lru-cache-c-plus-plus-implementation/
  */
+===============================1st way --i am following=========================
+#include <iostream>
+#include <unordered_map>
 
+class Node {
+public:
+    int key;
+    Node* next;
+    Node* prev;
+
+    Node(int key) {
+        this->key = key;
+        this->next = nullptr;
+        this->prev = nullptr;
+    }
+};
+
+class Main {
+private:
+    std::unordered_map<int, Node*> cache;
+    int capacity;
+    Node* head;
+    Node* tail;
+
+public:
+    Main(int capacity) {
+        this->capacity = capacity;
+        this->head = nullptr;
+        this->tail = nullptr;
+    }
+
+    // Destructor to clean up allocated memory and prevent memory leaks
+    ~Main() {
+        Node* current = head;
+        while (current != nullptr) {
+            Node* nextNode = current->next;
+            delete current;
+            current = nextNode;
+        }
+    }
+
+    void addToHead(Node* node) {
+        if (cache.size() == 0) {
+            head = node;
+            tail = node;
+        } else {
+            node->next = head;
+            head->prev = node;
+            head = node;
+        }
+    }
+
+    void deleteNode(Node* node) {
+        // if node to be deleted is the first node
+        if (head == node)
+            head = node->next;
+        // if node to be deleted is the last node
+        if (tail == node)
+            tail = node->prev;
+        // boundary condition for start
+        if (node->prev != nullptr)
+            node->prev->next = node->next;
+        // boundary condition for end
+        if (node->next != nullptr)
+            node->next->prev = node->prev;
+    }
+
+    void look(int key) {
+        if (cache.find(key) != cache.end()) {
+            Node* keyNode = cache[key];
+            deleteNode(keyNode);
+            // Free the memory of the unlinked node before creating a replacement
+            delete keyNode; 
+        } else {
+            if (cache.size() == capacity) {
+                // cache is full, delete the last entry
+                int tailKey = tail->key;
+                Node* oldTail = tail;
+                deleteNode(oldTail);
+                cache.erase(tailKey);
+                delete oldTail; // Free memory of the evicted node
+            }
+        }
+        // add it to cache
+        Node* newNode = new Node(key);
+        addToHead(newNode);
+        cache[key] = newNode;
+        std::cout << "Item accessed: " << key << std::endl;
+        printCache();
+    }
+
+    void printCache() {
+        std::cout << "Cache : ";
+        Node* start = head;
+        while (start != nullptr) {
+            std::cout << start->key << " ";
+            start = start->next;
+        }
+        std::endl(std::cout);
+    }
+};
+
+int main() {
+    int capacity = 4;
+    Main lru(capacity);
+    lru.look(1);
+    lru.look(2);
+    lru.look(1);
+    lru.look(3);
+    lru.look(4);
+    lru.look(3);
+    lru.look(5);
+    lru.look(4);
+    lru.look(6);
+    return 0;
+}
+
+=================================2nd way=======================
 #include <iostream>
 #include <map>
 using namespace std;

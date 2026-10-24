@@ -7,48 +7,33 @@
  * Ref: http://bhrigu.me/blog/2017/01/22/lru-cache-c-plus-plus-implementation/
  */
 ===============================1st way --i am following=========================
-#include <iostream>
+    #include <iostream>
 #include <unordered_map>
 
 class Node {
 public:
     int key;
+    int value; // Added value support to store actual payload data
     Node* next;
     Node* prev;
 
-    Node(int key) {
+    Node(int key, int value) {
         this->key = key;
+        this->value = value;
         this->next = nullptr;
         this->prev = nullptr;
     }
 };
 
-class Main {
+class LRUCache {
 private:
     std::unordered_map<int, Node*> cache;
     int capacity;
     Node* head;
     Node* tail;
 
-public:
-    Main(int capacity) {
-        this->capacity = capacity;
-        this->head = nullptr;
-        this->tail = nullptr;
-    }
-
-    // Destructor to clean up allocated memory and prevent memory leaks
-    ~Main() {
-        Node* current = head;
-        while (current != nullptr) {
-            Node* nextNode = current->next;
-            delete current;
-            current = nextNode;
-        }
-    }
-
     void addToHead(Node* node) {
-        if (cache.size() == 0) {
+        if (head == nullptr) { // Safely checks structural boundary rather than map tracking size
             head = node;
             tail = node;
         } else {
@@ -59,71 +44,113 @@ public:
     }
 
     void deleteNode(Node* node) {
-        // if node to be deleted is the first node
         if (head == node)
             head = node->next;
-        // if node to be deleted is the last node
         if (tail == node)
             tail = node->prev;
-        // boundary condition for start
         if (node->prev != nullptr)
             node->prev->next = node->next;
-        // boundary condition for end
         if (node->next != nullptr)
             node->next->prev = node->prev;
+            
+        node->next = nullptr;
+        node->prev = nullptr;
     }
 
-    void look(int key) {
+    // Moves an existing node to the head of the list (marks it as Most Recently Used)
+    void moveToHead(Node* node) {
+        deleteNode(node);
+        addToHead(node);
+    }
+
+public:
+    LRUCache(int capacity) {
+        this->capacity = capacity;
+        this->head = nullptr;
+        this->tail = nullptr;
+    }
+
+    // Clean up remaining allocations on destruction to eliminate memory leaks
+    ~LRUCache() {
+        Node* current = head;
+        while (current != nullptr) {
+            Node* nextNode = current->next;
+            delete current;
+            current = nextNode;
+        }
+    }
+
+    // Retrieves a value from the cache. Returns -1 if key does not exist.
+    int get(int key) {
+        if (cache.find(key) == cache.end()) {
+            return -1; 
+        }
+        Node* node = cache[key];
+        moveToHead(node); // Accessed item becomes Most Recently Used
+        return node->value;
+    }
+
+    // Inserts or updates a key-value pair in the cache.
+    void put(int key, int value) {
         if (cache.find(key) != cache.end()) {
-            Node* keyNode = cache[key];
-            deleteNode(keyNode);
-            // Free the memory of the unlinked node before creating a replacement
-            delete keyNode; 
+            // Key exists: Update value and bring to head (No new node creation required)
+            Node* existingNode = cache[key];
+            existingNode->value = value;
+            moveToHead(existingNode);
         } else {
+            // Key does not exist: Check capacity thresholds
             if (cache.size() == capacity) {
-                // cache is full, delete the last entry
-                int tailKey = tail->key;
                 Node* oldTail = tail;
+                int tailKey = oldTail->key;
+                
                 deleteNode(oldTail);
                 cache.erase(tailKey);
-                delete oldTail; // Free memory of the evicted node
+                delete oldTail; // Free memory allocated for evicted node
             }
+            
+            // Allocate fresh node and link it at head
+            Node* newNode = new Node(key, value);
+            addToHead(newNode);
+            cache[key] = newNode;
         }
-        // add it to cache
-        Node* newNode = new Node(key);
-        addToHead(newNode);
-        cache[key] = newNode;
-        std::cout << "Item accessed: " << key << std::endl;
-        printCache();
     }
 
     void printCache() {
-        std::cout << "Cache : ";
+        std::cout << "Cache (MRU -> LRU): ";
         Node* start = head;
         while (start != nullptr) {
-            std::cout << start->key << " ";
+            std::cout << "[" << start->key << ":" << start->value << "] ";
             start = start->next;
         }
-        std::endl(std::cout);
+        std::cout << std::endl;
     }
 };
 
 int main() {
-    int capacity = 4;
-    Main lru(capacity);
-    lru.look(1);
-    lru.look(2);
-    lru.look(1);
-    lru.look(3);
-    lru.look(4);
-    lru.look(3);
-    lru.look(5);
-    lru.look(4);
-    lru.look(6);
+    int capacity = 3;
+    LRUCache lru(capacity);
+
+    std::cout << "--- Inserting Items ---" << std::endl;
+    lru.put(1, 100); lru.printCache();
+    lru.put(2, 200); lru.printCache();
+    lru.put(3, 300); lru.printCache();
+
+    std::cout << "\n--- Fetching Key 1 (Moves to front) ---" << std::endl;
+    std::cout << "Value of Key 1: " << lru.get(1) << std::endl;
+    lru.printCache();
+
+    std::cout << "\n--- Eviction Triggered (Key 2 dropped, capacity is 3) ---" << std::endl;
+    lru.put(4, 400); lru.printCache();
+
+    std::cout << "\n--- Updating Existing Key 3 ---" << std::endl;
+    lru.put(3, 350); lru.printCache();
+
     return 0;
 }
 
-=================================2nd way=======================
+================================================================================
+
+=================================2nd way========================================
 #include <iostream>
 #include <map>
 using namespace std;

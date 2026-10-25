@@ -1,10 +1,10 @@
 /*
  * Name: Balram Panwar
- * Email id: balram.panwar@gmail.com
- * Name of the file: prod_cons.c
+ * Email ID: balram.panwar@gmail.com
+ * Name of the file: Prod_Cons_Simple.c
  * Win10
  * Microsoft Visual Studio
- * This program demonstrates a Thread safe producer-consumer problem solution using pthreads with proper synchronization to avoid race conditions. 
+ * This program demonstrates a thread-safe producer-consumer problem solution using pthreads with proper synchronization to avoid race conditions. 
  * The producer and consumer run indefinitely, producing and consuming items from the shared buffer.
  * cond_producer is a condition variable to signal the producer when there is space in the buffer. 
  * cond_consumer is a condition variable to signal the consumer when there are items in the buffer.

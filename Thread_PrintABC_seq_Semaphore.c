@@ -63,8 +63,12 @@ int main() {
     sem_init(&semB, 0, 0);  // semB starts at 0, blocking Thread B
     sem_init(&semC, 0, 0);  // semC starts at 0, blocking Thread C
 
-    // Create threads
-    // 2nd parameter is use to set thread attribute like stack size but here by default value we are using, it is NULL
+    // Create threads : 
+    //int pthread_create(pthread_t *thread, const pthread_attr_t *attr, void *(*start_routine) (void *), void *arg);
+    //1. thread (Output parameter): A pointer to a pthread_t variable. The function writes a unique thread identifier to this address if it creates the thread successfully.
+    //2. attr (Input parameter): A pointer to a configuration structure. You can use this to tweak thread settings (like custom stack size, thread priority, or join status). Passing NULL uses the default system attributes.
+    //3. start_routine (Function pointer): The function you want the new thread to run. It must match this signature: void* function_name(void* arg).
+    //4. arg (Input parameter): A pointer to any data you want to pass as an input argument into your start_routine thread function. If your function doesn't need data, pass NULL.
     pthread_create(&tA, NULL, threadA, NULL);
     pthread_create(&tB, NULL, threadB, NULL);
     pthread_create(&tC, NULL, threadC, NULL);
@@ -77,8 +81,10 @@ int main() {
     // If you want to terminate it gracefully, you should implement a way to stop the threads
 
     // Wait for all threads to finish (this will never happen in this case)
-    // 2nd parameter: 	A pointer to a location where the thread's exit status (return value) will be stored. 
-    // Pass NULL if you don't care about the return value.
+    // int pthread_join(pthread_t thread, void **retval);
+    // 1. thread (Input): The unique identifier (pthread_t) of the target thread you are waiting for.
+    //2. retval (Output): A pointer to a void* location where the target thread's return status or value will be copied. 
+    //If you don't care about what the thread returned, you can safely pass NULL.
     pthread_join(tA, NULL);
     pthread_join(tB, NULL);
     pthread_join(tC, NULL);

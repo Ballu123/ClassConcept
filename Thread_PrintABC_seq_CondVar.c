@@ -19,6 +19,9 @@ void* threadA(void* arg) {
     pthread_mutex_lock(&lock);
 
     while (turn != 0) {
+        //int pthread_cond_wait(pthread_cond_t *cond, pthread_mutex_t *mutex);
+        //1. cond: A pointer to the initialized condition variable that handles the signal queue.
+        //2. mutex: A pointer to the mutex lock that is currently guarding the shared variable or state flag.
         pthread_cond_wait(&cond_A, &lock);  // Wait for its turn (turn == 0)
     }
 

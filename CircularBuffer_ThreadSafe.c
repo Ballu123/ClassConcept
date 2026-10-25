@@ -1,12 +1,13 @@
 /*
- * Name:Balram Panwar
+ * Name: Balram Panwar
  * Email id: balram.panwar@gmail.com
- * Name of the file: CircularBuffer_ThreadSafe.cpp
+ * Name of the file: CircularBuffer_ThreadSafe.c
  * Win10
  * Microsoft Visual Studio
- * Circular buffer is a FIFO data structure that treats memory to be circular; that is, the read/write indices loop back to 0 after it reaches the buffer length. 
- * This is achieved by two pointers to the array, the “head” pointer and the “tail” pointer. As data is added (write) to the buffer, the head pointer is incremented and likewise, 
- * when the data is being removed (read) the tail pointer is incremented. The definition of head, tail, their movement direction and write and read location are all implementation-dependent,
+ * A circular buffer is a FIFO data structure that treats memory as circular; that is, the read/write indices loop back to 0 after they reach the buffer length. 
+ * This is achieved by two pointers to the array, the “head” pointer and the “tail” pointer. 
+ * As data is added (write) to the buffer, the head pointer is incremented, and likewise, when the data is being removed (read), the tail pointer is incremented. 
+ * The definition of head, tail, their movement direction, and write and read location are all implementation-dependent,
  * but the idea/goal remains the same.
  */
   Producer                   Consumer
@@ -30,7 +31,7 @@
 #include <pthread.h>
 
 /*─────────────────────────────────────────
-  Circular Buffer — Simple & Thread Safe
+  Circular Buffer — Simple & Thread-Safe
 ─────────────────────────────────────────*/
 
 #define BUF_SIZE 8   // must be power of 2

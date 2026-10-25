@@ -7,9 +7,10 @@
  * ref : https://embedjournal.com/implementing-circular-buffer-embedded-c/
  * ref : http://www.java2s.com/Tutorial/Java/0140__Collections/CircularBuffer.htm
  * ref : https://gist.github.com/xstherrera1987/3196485
- * Circular buffer is a FIFO data structure that treats memory to be circular; that is, the read/write indices loop back to 0 after it reaches the buffer length. 
- * This is achieved by two pointers to the array, the “head” pointer and the “tail” pointer. As data is added (write) to the buffer, the head pointer is incremented and likewise, 
- * when the data is being removed (read) the tail pointer is incremented. The definition of head, tail, their movement direction and write and read location are all implementation dependent but the idea/goal remains the same.
+ * Circular buffer is a FIFO data structure that treats memory as circular; that is, the read/write indices loop back to 0 after they reach the buffer length. 
+ * This is achieved by two pointers to the array, the “head” pointer and the “tail” pointer. As data is added (write) to the buffer, 
+ * the head pointer is incremented, and likewise, when the data is being removed (read), the tail pointer is incremented. 
+ * The definition of head, tail, their movement direction, and write and read location are all implementation-dependent, but the idea/goal remains the same.
  */
 
 #include <iostream>

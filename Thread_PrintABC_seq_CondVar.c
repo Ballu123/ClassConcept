@@ -67,7 +67,12 @@ int main() {
     pthread_t tA, tB, tC;
 
     // Initialize the mutex and condition variables
+    //int pthread_mutex_init(pthread_mutex_t *mutex, const pthread_mutexattr_t *attr);
+    //&lock (The Mutex Pointer): The address of your declared pthread_mutex_t variable.This function prepares the raw memory of that variable and configures its internal state to an "unlocked" baseline
+    //NULL (The Attributes Pointer): Passes configuration options. Passing NULL tells the operating system to use the default mutex attributes.
     pthread_mutex_init(&lock, NULL);
+    
+    //int pthread_cond_init(pthread_cond_t *cond, const pthread_condattr_t *attr);
     pthread_cond_init(&cond_A, NULL);
     pthread_cond_init(&cond_B, NULL);
     pthread_cond_init(&cond_C, NULL);
